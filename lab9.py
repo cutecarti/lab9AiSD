@@ -25,6 +25,19 @@ def enter():
             if crypted[1] == baseList[baseList.index(i)+1].rstrip():
                 messagebox.showinfo("Уведомление","Вы вошли")
                 base.close()
+                ci = 0
+                cell_colors = ['white', 'black']
+                mainWindow.withdraw()
+                bordWindow.deiconify()
+                for row in range(8):
+                    for col in range(8):
+                        x1,y1 = col*50 , row*50
+                        x2,y2 = col*50 + 50, row*50 + 50
+                        canvas.create_rectangle((x1,y1),(x2,y2),fill=cell_colors[ci])
+                        ci = not ci
+                    ci = not ci
+                canvas.pack()
+                bordWindow.mainloop()
                 return
             else:
                 errmsg.set("Неверный пароль")
@@ -35,7 +48,12 @@ def enter():
     messagebox.showinfo("Уведомление","Вы успешно зарегистрировались")
     base.close()
 
-
+def closeBoard():
+    mainWindow.deiconify()
+    bordWindow.withdraw()
+def closeMain():
+    mainWindow.destroy()
+    bordWindow.destroy()
 def crypto(login,password):
     value = 10
     cryptedLogin = ""
@@ -67,7 +85,14 @@ def logvalid(newval):
 
 mainWindow = Tk()
 mainWindow.title("lab9")
-mainWindow.geometry("600x400")
+mainWindow.geometry('400x150')
+mainWindow.protocol('WM_DELETE_WINDOW',closeMain)
+bordWindow = Tk()
+bordWindow.title("Шашки")
+bordWindow.geometry("400x400")
+bordWindow.withdraw()
+bordWindow.protocol('WM_DELETE_WINDOW',closeBoard)
+canvas = Canvas(bordWindow,width=400,height=400)
 checkLogin = (mainWindow.register(logvalid),"%P")
 checkPass = (mainWindow.register(passvalid),"%P")
 label1 = Label(mainWindow,text="Введите логин и пароль:")
@@ -79,8 +104,8 @@ loginEntry = Entry(mainWindow,width=40,validate="key",validatecommand=checkLogin
 passEntry = Entry(mainWindow,width=40,validate="key",validatecommand=checkPass)
 enterButton = ttk.Button(mainWindow,text="Ввод",command=lambda :enter())
 label1.pack(anchor="n")
-label2.place(anchor="nw",relx=0.22,rely=0.045)
-label3.place(anchor="nw",relx=0.21,rely=0.12)
+label2.place(anchor="nw",relx=0.09,rely=0.12)
+label3.place(anchor="nw",relx=0.07,rely=0.32)
 loginEntry.pack(anchor="n")
 passEntry.pack(anchor="n",pady=10)
 enterButton.pack(anchor="n")
